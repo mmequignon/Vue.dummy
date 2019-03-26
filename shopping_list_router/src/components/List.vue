@@ -2,7 +2,7 @@
     <v-content>
         <v-layout row>
             <v-flex md4>
-                <v-text-field label="Box" box v-model="item.title" outline />
+                <v-combobox v-model="item.title" box label="Item name" :items="item_names"></v-combobox>
             </v-flex>
             <v-flex md2>
                 <v-btn color="success" @click="add_item">add</v-btn>
@@ -45,7 +45,7 @@ export default {
                 done: false
             },
             items: [],
-            id: this.$store.getters.get_new_id,
+            id: this.$route.params.id,
             budget: 0,
             last_edited: 0,
         }
@@ -53,11 +53,14 @@ export default {
     computed: {
         total_sum: function(){
             let total = this.items.reduce((acc, obj) => acc += parseInt(obj.price), 0);
+            this.store();
             return total;
         },
         budget_exceeded: function(){
-            let total = this.items.reduce((acc, obj) => acc += parseInt(obj.price), 0);
-            return total > this.budget ? true : false;
+            return this.total > this.budget ? true : false;
+        },
+        item_names: function(){
+            return this.items.map((obj) => obj.title); 
         }
     },
     methods: {
@@ -67,7 +70,6 @@ export default {
         restore: function(){
             var o = this.$store.getters.get_by_id(this.id);
             if (o){
-                o = JSON.parse(o);
                 this.items = o.items;
                 this.budget = o.budget;
             }

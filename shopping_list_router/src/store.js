@@ -11,18 +11,31 @@ export default new Vuex.Store ({
     getters: {
         get_by_id: (state) => (id) => {
             for (var list in state.lists){
-                if (list.id == id){
-                    return list;
+                var stored_id = state.lists[list].id;
+                if (stored_id == id){
+                    return state.lists[list];
                 }
             }
             return false;
         },
-        get_new_id: function(state){
+        get_last_edited: state => {
+            var last_edited_list = false;
+            for (var index in state.lists){
+                var list = state.lists[index];
+                var more_recent = last_edited_list.last_edited < list.last_edited;
+                if (!last_edited_list || more_recent){
+                    last_edited_list = list
+                    continue;
+                }
+            }
+            return last_edited_list;
+        },
+        get_new_id: state => {
             var res = 0;
-            this.console.log(state.lists);
             for (var list in state.lists){
-                if (res < list.id){
-                    res = list.id + 1;
+                var id = parseInt(list);
+                if (res <= id){
+                    res = id + 1;
                 }
             }
             return res;

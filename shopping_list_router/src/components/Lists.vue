@@ -12,7 +12,7 @@
                 </v-layout>
             </v-list>
         </ul>
-        {{ next_id }}
+        <v-btn flat><router-link :to="'/list/' + next_id">New SL</router-link></v-btn>
     </v-content>
 </template>
 
